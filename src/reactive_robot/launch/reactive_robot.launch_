@@ -1,0 +1,15 @@
+<launch>
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
+    <rosparam command="load" file="$(find reactive_robot)/config/ekf.yaml" />
+  </node>
+
+  <include file="$(find reactive_robot_sim)/launch/reactive_robot_sim.launch" />
+
+  <node pkg="reactive_robot" type="keyboard_node.py" name="keyboard_controller" output="screen" />
+
+  <node pkg="reactive_robot" type="imu_odometry_node.py" name="imu_odometry_publisher" />
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find reactive_robot)/main_config.rviz" />
+		
+</launch>
