@@ -1,0 +1,51 @@
+# ekf.yaml dosyası
+frequency: 30.0 # Filtrenin ne sıklıkla çalışacağı (Hz)
+sensor_timeout: 0.1 # Sensör verisi gelmezse ne kadar bekleneceği (saniye)
+two_d_mode: true # Robotun sadece 2D düzlemde hareket ettiğini varsay
+
+# Yayınlanacak TF çerçevelerinin isimleri
+map_frame: map       # Genellikle kullanılmaz ama tanımlı olmalı
+odom_frame: odom     # Bizim oluşturacağımız ana çerçeve
+base_link_frame: base_footprint # Robotun yerdeki izdüşümü çerçevesi
+world_frame: odom    # map_frame kullanmıyorsak odom'u dünya olarak kabul et
+
+# ------ Sensör 0: Gazebo'dan gelen Odometri (/odom) ------
+odom0: /odom
+odom0_config: [false, false, false, # Pozisyon (X, Y, Z) kullanma
+               false, false, false, # Oryantasyon (Roll, Pitch, Yaw) kullanma
+               true,  true,  false, # Lineer Hız (X, Y, Z) kullan (X ve Y evet)
+               false, false, true, # Açısal Hız (Roll, Pitch, Yaw) kullan (Yaw evet)
+               false, false, false] # Lineer İvme kullanma
+odom0_differential: false # Hız verisini doğrudan kullan, pozisyonu entegre etme
+odom0_queue_size: 10
+
+# ------ Sensör 1: Gazebo'dan gelen IMU (/imu) ------
+imu0: /imu
+imu0_config: [false, false, false, # Pozisyon kullanma
+              false, false, false, # Oryantasyon kullanma (EKF bunu kendi hesaplayacak)
+              false, false, false, # Lineer Hız kullanma
+              false, false, true, # Açısal Hız kullan (Sadece Yaw evet)
+              false, false, false] # Lineer İvme kullanma
+imu0_differential: false # Hız verisini doğrudan kullan
+imu0_queue_size: 10
+
+# ------ Yayınlama Ayarları ------
+publish_tf: true # EN ÖNEMLİSİ: odom -> base_link TF'ini yayınla
+
+# ------ Proses Gürültüsü Kovaryansı (Filtrenin tahminine ne kadar güvendiği) ------
+# Bunlar başlangıç için makul değerler, ayarlanabilir.
+process_noise_covariance: [0.05, 0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0.05, 0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0.06, 0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0.03, 0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0.03, 0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0.06, 0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0.025, 0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0.025, 0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0.04, 0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0.01, 0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0.01, 0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0.02, 0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0.01, 0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0.01, 0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0.015]
